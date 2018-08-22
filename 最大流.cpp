@@ -1,6 +1,5 @@
 #include<bits/stdc++.h>
 #define ll long long
-#define m(a) memset(a,0,sizeof(a))
 using namespace std;
 int read(){
 	int x=0,f=1;char c;
@@ -8,64 +7,60 @@ int read(){
 	for(;isdigit(c);c=getchar())x=(x<<3)+(x<<1)+c-'0';
 	return x*f;
 }
-queue<int> q;
-int n,m,s,t;
-ll ans;
+#define maxn 10005
+#define maxm 200005
+int nxt[maxm],to[maxm],len[maxm];
+int fst[maxn],dep[maxn];
+bool vis[maxn];
+int n,m,s,t,x,y,z;
+ll ans=0;
 int tot=1;
-int nxt[2005],to[2005],len[2005];
-int fst[1005],dep[1005]; 
-bool sign,vis[1005];
-void inser(int x,int y,int w){
+inline void inser(int x,int y,int z){
 	nxt[++tot]=fst[x];
 	fst[x]=tot;
 	to[tot]=y;
-	len[tot]=w;
+	len[tot]=z;
 }
-void bfs(int x){
-	vis[x]=1;
-	q.push(x);
+
+inline bool bfs(){
+	memset(dep,0,sizeof(dep));
+	queue<int> q;while(!q.empty())q.pop();
+	dep[s]=1;q.push(s);
 	while(!q.empty()){
-		int t=q.front();
-		q.pop();
-		for(int u=fst[t];u;u=nxt[u]){
-			if(len[u]&&!vis[to[u]]){
-				dep[to[u]]=dep[t]+1;
-				vis[to[u]]=1;
-				q.push(to[u]);
+		int x=q.front();q.pop();
+		for(int u=fst[x];u;u=nxt[u]){
+			int v=to[u];
+			if(len[u]&&!dep[v]){
+				dep[v]=dep[x]+1;
+				q.push(v);
 			}
 		}
 	}
+	if(dep[t])return 1;
+	return 0;
 }
-int dfs(int x,int delta){
-	if(x==t)return delta;
-	int ans=0;
+int dfs(int x,int w){
+	if(x==t)return w;
 	for(int u=fst[x];u;u=nxt[u]){
-		if(len[u]&&dep[to[u]]==dep[x]+1){
-			int minn=dfs(to[u],min(len[u],delta));
-			len[u]-=minn;
-			len[u^1]+=minn;
-			ans+=minn;
+		int v=to[u];
+		if(len[u]&&dep[v]==dep[x]+1){
+			int tmp=dfs(v,min(w,len[u]));
+			if(tmp<=0)continue;
+			len[u]-=tmp;
+			len[u^1]+=tmp;
+			return tmp;
 		}
-	}
-	if(ans)return ans;
-}
-void clear(){
-	ans=0;m(dep);m(vis);
-	while(!q.empty()) q.pop();
+	}return 0;
 }
 
 int main(){
-	int x,y,w;
 	n=read();m=read();s=read();t=read();
 	for(int i=1;i<=m;i++){
-		x=read();y=read();w=read();
-		inser(x,y,w);inser(y,x,0);
-	}
-	clear();vis[t]=1;
-	while(vis[t]){
-		m(vis);
-		bfs(s);
-		ans+=dfs(s,1e+9);
-	}
-	cout<<ans<<endl;
+		x=read();y=read();z=read();
+		inser(x,y,z);inser(y,x,0);
+	}dep[s]=1;
+	while(bfs()!=0){
+		for(int tmp=dfs(s,1e9);tmp;tmp=dfs(s,1e9))
+			ans+=tmp;
+	}cout<<ans<<endl;
 }
