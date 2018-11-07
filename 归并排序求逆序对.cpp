@@ -43,5 +43,5 @@ int main(){
 		a[i]=read();
 	}
 	mergesort(1,n);
-	cout<<ans;
+	cout<<ans; 
 }

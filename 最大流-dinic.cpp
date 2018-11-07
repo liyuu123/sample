@@ -17,10 +17,10 @@ void wr(ll x){
     if(!ctt)write[++ctt]=0;
     while(ctt)putchar(write[ctt--]+'0');
 }
-#define maxn 205
-#define maxm 405
+#define maxn 10005
+#define maxm 200005
 int n,m,s,t,x,y,z,tmp;
-int tot=1;ll ans=0;
+int tot=1,ans=0;
 int fst[maxn],dep[maxn];
 int nxt[maxm],to[maxm],len[maxm];
 void inser(int x,int y,int z){
@@ -61,7 +61,7 @@ int dfs(int x,int w){
 }
 
 int main(){
-	m=read();n=read();s=1;t=n;
+	n=read();m=read();s=read();t=read();
 	for(int i=1;i<=m;i++){
 		x=read();y=read();z=read();
 		inser(x,y,z);inser(y,x,0);
